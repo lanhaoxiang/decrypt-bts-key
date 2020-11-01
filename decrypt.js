@@ -1,8 +1,9 @@
-const { PublicKey, PrivateKey, Aes } = require('bitsharesjs');
+const { PublicKey, PrivateKey, Aes, Signature } = require('bitsharesjs');
 const fs = require('fs');
 const walletJSON = JSON.parse(fs.readFileSync('./PLAY-WALLET-JSON-FILE'));
 const PREFIX = 'PLS';
 const PASSWORD = 'PASSWORD';
+const MESSAGE_TO_SIGN = 'DACPLAY: Verification Test';
 
 const _parseWalletJson = function (json_contents) {
   let password_checksum;
@@ -123,9 +124,22 @@ const _decryptPrivateKeys = function (state, password) {
 
       try {
         let private_plainhex = password_aes.decryptHex(encrypted_private);
-        console.log('>>>>PrivateKey(Hex):\t', private_plainhex)
+        //console.log('>>>>PrivateKey(Hex):\t', private_plainhex)
         let private_key = PrivateKey.fromHex(private_plainhex);
-        console.log('>>>>PrivateKey(Base58):',private_key.toWif())
+        //console.log('>>>>PrivateKey(Base58):',private_key.toWif())
+        
+        let signed_hashed_msg = Signature.sign(
+          MESSAGE_TO_SIGN,
+          private_key
+        ).toHex();
+        let signed_hex_msg = Signature.signHex(
+          Buffer.from(MESSAGE_TO_SIGN).toString('hex'),
+          private_key
+        ).toHex();
+        let public_key = private_key.toPublicKey().toString(PREFIX);
+
+
+        console.log(public_key, signed_hex_msg, account_name);
       } catch (e) {
         console.log(e, e.stack);
       }
