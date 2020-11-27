@@ -4,6 +4,7 @@ const walletJSON = JSON.parse(fs.readFileSync('./PLAY-WALLET-JSON-FILE'));
 const PREFIX = 'PLS';
 const PASSWORD = 'PASSWORD';
 const MESSAGE_TO_SIGN = 'DACPLAY: Verification Test';
+var output = [];
 
 const _parseWalletJson = function (json_contents) {
   let password_checksum;
@@ -124,7 +125,6 @@ const _decryptPrivateKeys = function (state, password) {
 
       try {
         let private_plainhex = password_aes.decryptHex(encrypted_private);
-        //console.log('>>>>PrivateKey(Hex):\t', private_plainhex)
         let private_key = PrivateKey.fromHex(private_plainhex);
         //console.log('>>>>PrivateKey(Base58):',private_key.toWif())
 
@@ -138,16 +138,21 @@ const _decryptPrivateKeys = function (state, password) {
         ).toHex();
         let public_key = private_key.toPublicKey().toString(PREFIX);
 
-        console.log(
+        output.push({
+          private_plainhex,
+          private_key,
+          signed_hashed_msg,
+          signed_hex_msg,
           public_key,
           signed_hex_msg,
           signed_hashed_msg,
-          account_name
-        );
+          account_name,
+        });
       } catch (e) {
         console.log(e, e.stack);
       }
     }
+    console.log(output);
   }
 };
 
