@@ -1,4 +1,4 @@
-const { PublicKey, PrivateKey, Aes } = require('bitsharesjs');
+const { PublicKey, PrivateKey, Aes, Signature } = require('bitsharesjs');
 const fs = require('fs');
 const walletJSON = JSON.parse(fs.readFileSync('./PLAY-WALLET-JSON-FILE'));
 const PREFIX = 'PLS';
@@ -125,6 +125,7 @@ const _decryptPrivateKeys = function (state, password) {
 
       try {
         let private_plainhex = password_aes.decryptHex(encrypted_private);
+
         let private_key = PrivateKey.fromHex(private_plainhex);
         let signed_hashed_msg = Signature.sign(
           MESSAGE_TO_SIGN,
@@ -135,6 +136,7 @@ const _decryptPrivateKeys = function (state, password) {
           private_key
         ).toHex();
         let public_key = private_key.toPublicKey().toString(PREFIX);
+
         output.push({
           private_plainhex,
           private_key,
