@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bitsharesjs": "^3.1.1"
+    "bitsharesjs": "^3.1.1",
+    "lzma": "^2.3.2"
   }
 }
